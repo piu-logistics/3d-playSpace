@@ -3,7 +3,7 @@
 <img src="https://xrfragment.org/example/assets/logo.png" width="30%"/>
 
 Auto-Hosted XR Fragment-enriched example models.
-<br></br
+<br>
 
 > Getting started:
 
