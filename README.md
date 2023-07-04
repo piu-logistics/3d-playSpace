@@ -12,6 +12,7 @@ Auto-Hosted XR Fragment-enriched example models.
 
 <img src="https://i.imgur.com/Y8k9JL5.png"/>
 
+* familiarize yourself using [these youtube video's](https://www.youtube.com/playlist?list=PLctjJGlTmeE64XPSQER2BSbjmqVGaWM4J) and the [documentation](https://xrfragment.org)
 * create/update/add gltf/fbx/stl/uszd) models (and link them using `href` or `src`)
 
 >  see [embedded properties](https://xrfragment.org/#%F0%9F%93%9C%20XR%20fragments) 
