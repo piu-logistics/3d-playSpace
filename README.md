@@ -5,7 +5,7 @@
 Auto-Hosted XR Fragment-enriched example models.
 <br>
 
-> Getting started:
+## Getting started:
 
 * Press the fork button, and it will automatically host an experience at your own URL
 * in the github 'Actions'-tab figure out the url to your models (`https://yourusername.github.io/xrfragment-helloworld/scene.gltf` e.g.)
@@ -25,6 +25,11 @@ To test modifications in the sandbox by clicking 'load 3D asset'-button in the [
 
   * upload the updated file by clicking [here](xrfragment-helloworld/upload/main) (or click 'Add file' > 'upload files') and press 'commit'
   * enter the url of your asset in the [sandbox](https://xrfragment.org/example/aframe/sandbox) (might take a minute for github to update the URL)
+
+> You can even link to the asset using XR Fragment clients:
+
+* https://xrfragment.org/example/aframe/sandbox?https://yourusername.github.io/xrfragment-helloworld/scene.gltf
+* https://searxr.me?https://yourusername.github.io/xrfragment-helloworld/scene.gltf
 
 #### Selfhosting (only advanced users)
 
