@@ -17,7 +17,7 @@ Auto-Hosted XR Fragment-compatible XR viewer
 
 >  see [embedded properties](https://xrfragment.org/#%F0%9F%93%9C%20XR%20fragments) 
 
-## testing
+## Quick testing
 
 To test modifications quickly, click the 'load 3D asset'-button in the [sandbox](https://xrfragment.org/example/aframe/sandbox) after pressing the XRF-button:
 
