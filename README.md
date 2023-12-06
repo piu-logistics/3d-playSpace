@@ -7,7 +7,7 @@ Auto-Hosted XR Fragment-compatible XR viewer
 
 ## Getting started:
 
-* download `scene.gltf`
+* download `index.glb`
 * edit in your favorite 3D editor (blender e.g.), and play with the [embedded properties](https://xrfragment.org/#%F0%9F%93%9C%20XR%20fragments) of objects (`custom property`-tab in blender)
 
 <img src="https://i.imgur.com/Y8k9JL5.png"/>
@@ -29,11 +29,11 @@ To test modifications quickly, click the 'load 3D asset'-button in the [sandbox]
 * in the github 'Actions'-tab figure out the url(`https://yourusername.github.io/xrfragment-helloworld` e.g.) and visit it
 * profit!
 
-> now upload more `.glb` or `.gltf` files (`new.glb`):
+> now upload more `.glb` or `.gltf` files (`new.glb` e.g.):
 
 <img src="https://i.imgur.com/MsmZJDQ.png"/>
 
-In another scene (`scene.gltf` e.g.) link to that asset (`new.glb`) by selecting an object in blender, and add a custom `href` property to it:
+In another scene (`index.glb` e.g.) link to that asset (`new.glb`) by selecting an object in blender, and add a custom `href` property to it:
 
 <img src="https://i.imgur.com/smkwHYv.png"/>
 
