@@ -17,7 +17,7 @@
     <a-scene xr-mode-ui="XRMode: xr"  
              renderer="colorManagement: true; highRefreshRate:true;" 
              light="defaultLightsEnabled: false">
-      <a-entity id="player" movement-controls touch-controls wasd-controls="fly:false" look-controls>
+      <a-entity id="player" movement-controls touch-controls wasd-controls="fly:true" look-controls>
         <a-entity camera="fov:90" position="0 1.6 0" id="camera"></a-entity>
         <a-entity id="left-hand" hand-tracking-controls="hand:left;modelColor:#cccccc" raycaster="objects:.ray" blink-controls="cameraRig:#player; teleportOrigin: #camera; collisionEntities: .floor">
           <a-entity rotation="-35 0 0" position="0 0.1 0" id="navigator"> 
