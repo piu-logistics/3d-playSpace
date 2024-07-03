@@ -9,6 +9,28 @@
     <script src="https://xrfragment.org/dist/aframe.min.js"></script> 
     <script src="https://xrfragment.org/dist/xrfragment.aframe.js"></script>
     <script>
+      AFRAME.registerComponent('joystick-flight', {
+        schema: {
+          speed: {type: 'number', default: 10}
+        },
+        init: function () {
+          this.directionVec3 = new THREE.Vector3();
+        },
+        tick: function (time, timeDelta) {
+          var data = this.data;
+          var el = this.el;
+          var inputX = this.el.components['tracked-controls'].axis[0];
+          var inputY = this.el.components['tracked-controls'].axis[1];
+    
+          // Calculate direction based on joystick input
+          this.directionVec3.set(inputX, 0, -inputY).normalize();
+    
+          // Update position based on direction and speed
+          var velocity = this.directionVec3.clone().multiplyScalar(data.speed * timeDelta / 1000);
+          el.object3D.position.add(velocity);
+        }
+      });
+
       AFRAME.registerComponent('speed-control', {
         schema: { speed: { type: 'number', default: 1.0 } },
         tick: function (time, timeDelta) {
@@ -56,8 +78,13 @@
       </a-entity>
 
       <a-entity id="home" xrf="index.glb" xrf-menu></a-entity>
-    </a-scene>
 
+  <a-entity id="cameraRig">
+    <a-camera position="0 1.6 0"></a-camera>
+    <a-entity id="left-hand" oculus-touch-controls="hand: left" joystick-flight></a-entity>
+    <a-entity id="right-hand" oculus-touch-controls="hand: right" joystick-flight></a-entity>
+  </a-entity>
+</a-scene>
     <!-- OPTIONAL                                                                                            -->
     <!--                                                                                                     -->
     <!-- everything below is completely optional, but handy to add a quick menu / connectivity to your space -->
