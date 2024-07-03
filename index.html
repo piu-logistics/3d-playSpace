@@ -17,6 +17,8 @@
                 this.directionVec3 = new THREE.Vector3();
             },
             tick: function (time, timeDelta) {
+                // Ensure that the tracked-controls component and its axis are available
+                if (!this.el.components['tracked-controls'] || !this.el.components['tracked-controls'].axis) return;
                 var inputX = this.el.components['tracked-controls'].axis[0];
                 var inputY = this.el.components['tracked-controls'].axis[1];
                 this.directionVec3.set(inputX, 0, -inputY).normalize();
@@ -25,17 +27,19 @@
             }
         });
 
+        // This component could contain logic for dynamically adjusting the speed based on interactions
         AFRAME.registerComponent('speed-control', {
             schema: { speed: {type: 'number', default: 1.0} },
             init: function () {
                 // Initialization logic here
             },
             tick: function (time, timeDelta) {
-                // Example: Adjust speed based on some condition
-                if (someCondition) {
-                    this.data.speed += 0.1; // Increase speed factor
+                // Placeholder for actual condition
+                var increaseSpeed = false; // Replace this with your actual condition
+                if (increaseSpeed) {
+                    this.data.speed += 0.1;
                 } else {
-                    this.data.speed -= 0.1; // Decrease speed factor
+                    this.data.speed -= 0.1;
                 }
                 this.el.setAttribute('joystick-flight', 'speed', 500 * this.data.speed);
             }
@@ -46,24 +50,20 @@
     </style>
 </head>
 <body>
-    <a-scene xr-mode-ui="XRMode: xr"  
-             renderer="colorManagement: true; highRefreshRate: true;" 
+    <a-scene xr-mode-ui="XRMode: xr"
+             renderer="colorManagement: true; highRefreshRate: true;"
              light="defaultLightsEnabled: false">
         <a-entity id="cameraRig" dynamic-body="mass: 5; linearDamping: 0.2; angularDamping: 0.5"
                   movement-controls touch-controls wasd-controls="fly: true; acceleration: 500"
                   look-controls="pointerLockEnabled: true; reverseMouseDrag: false"
                   joystick-flight>
             <a-camera position="0 1.6 0"></a-camera>
-            <a-entity id="leftController" oculus-touch-controls="hand: left" hand-tracking-controls="hand:left;modelColor:#cccccc"
+            <a-entity id="leftController" hand-tracking-controls="hand:left; modelColor:#cccccc"
                       raycaster="objects:.interactive" blink-controls="cameraRig:#cameraRig; teleportOrigin: #camera"
-                      laser-controls="hand: left">
-                <!-- Other entities related to the left controller -->
-            </a-entity>
-            <a-entity id="rightController" oculus-touch-controls="hand: right" hand-tracking-controls="hand:right;modelColor:#cccccc"
+                      laser-controls="hand: left"></a-entity>
+            <a-entity id="rightController" hand-tracking-controls="hand:right; modelColor:#cccccc"
                       raycaster="objects:.interactive" blink-controls="cameraRig:#cameraRig; teleportOrigin: #camera"
-                      laser-controls="hand: right">
-                <!-- Other entities related to the right controller -->
-            </a-entity>
+                      laser-controls="hand: right"></a-entity>
         </a-entity>
         <a-entity id="home" xrf="index.glb" xrf-menu></a-entity>
     </a-scene>
@@ -74,5 +74,14 @@
     <script src="https://xrfragment.org/dist/xrfragment.plugin.editor.js"></script>
     <script src="https://xrfragment.org/dist/xrfragment.plugin.frontend.css.js"></script>
     <script src="https://xrfragment.org/dist/xrfragment.plugin.frontend.js"></script>
+    <!-- Handling Audio Context Activation -->
+    <script>
+        document.addEventListener('click', function () {
+            const audioContext = AFRAME.scenes[0].audioListener.context;
+            if (audioContext.state === 'suspended') {
+                audioContext.resume();
+            }
+        });
+    </script>
 </body>
 </html>
