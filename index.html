@@ -17,6 +17,8 @@
                 this.directionVec3 = new THREE.Vector3();
             },
             tick: function (time, timeDelta) {
+                var data = this.data;
+                var el = this.el;
                 var inputX = this.el.components['tracked-controls'].axis[0];
                 var inputY = this.el.components['tracked-controls'].axis[1];
                 this.directionVec3.set(inputX, 0, -inputY).normalize();
