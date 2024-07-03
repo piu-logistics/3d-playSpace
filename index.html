@@ -1,140 +1,78 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <title>3D-Play - Test Space One</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 
-    <!-- AFRAME v1.5.0 + extra THREE.js extra loaders --> 
-    <script src="https://xrfragment.org/dist/aframe.min.js"></script> 
+    <!-- AFRAME v1.5.0 + extra THREE.js extra loaders -->
+    <script src="https://xrfragment.org/dist/aframe.min.js"></script>
     <script src="https://xrfragment.org/dist/xrfragment.aframe.js"></script>
     <script>
-      AFRAME.registerComponent('joystick-flight', {
-        schema: {
-          speed: {type: 'number', default: 10}
-        },
-        init: function () {
-          this.directionVec3 = new THREE.Vector3();
-        },
-        tick: function (time, timeDelta) {
-          var data = this.data;
-          var el = this.el;
-          var inputX = this.el.components['tracked-controls'].axis[0];
-          var inputY = this.el.components['tracked-controls'].axis[1];
-    
-          // Calculate direction based on joystick input
-          this.directionVec3.set(inputX, 0, -inputY).normalize();
-    
-          // Update position based on direction and speed
-          var velocity = this.directionVec3.clone().multiplyScalar(data.speed * timeDelta / 1000);
-          el.object3D.position.add(velocity);
-        }
-      });
+        AFRAME.registerComponent('joystick-flight', {
+            schema: {
+                speed: {type: 'number', default: 10}
+            },
+            init: function () {
+                this.directionVec3 = new THREE.Vector3();
+            },
+            tick: function (time, timeDelta) {
+                var inputX = this.el.components['tracked-controls'].axis[0];
+                var inputY = this.el.components['tracked-controls'].axis[1];
+                this.directionVec3.set(inputX, 0, -inputY).normalize();
+                var velocity = this.directionVec3.clone().multiplyScalar(this.data.speed * timeDelta / 1000);
+                this.el.object3D.position.add(velocity);
+            }
+        });
 
-      AFRAME.registerComponent('speed-control', {
-        schema: { speed: { type: 'number', default: 1.0 } },
-        tick: function (time, timeDelta) {
-          var el = this.el;
-          var data = this.data;
-          // Example: Increase speed when user presses a certain key or conditions meet
-          if (someCondition) {
-            data.speed += 0.1; // Increase speed factor
-          } else {
-            data.speed -= 0.1; // Decrease speed factor
-          }
-          el.setAttribute('wasd-controls', 'acceleration', 500 * data.speed);
-        }
-      });
+        AFRAME.registerComponent('speed-control', {
+            schema: { speed: {type: 'number', default: 1.0} },
+            init: function () {
+                // Initialization logic here
+            },
+            tick: function (time, timeDelta) {
+                // Example: Adjust speed based on some condition
+                if (someCondition) {
+                    this.data.speed += 0.1; // Increase speed factor
+                } else {
+                    this.data.speed -= 0.1; // Decrease speed factor
+                }
+                this.el.setAttribute('joystick-flight', 'speed', 500 * this.data.speed);
+            }
+        });
     </script>
-    <script>
-      AFRAME.registerComponent('wind-effect', {
-        tick: function (time, timeDelta) {
-          // Apply some wind effect logic here
-        }
-      });
-    </script>
-    <!-- important: allow touchevents in AR -->
-    <style type="text/css"> canvas.a-dom-overlay:not(.a-no-style) { padding: 0; pointer-events: auto; }</style>
-
-  </head>
-  <body>
+    <style type="text/css">
+        canvas.a-dom-overlay:not(.a-no-style) { padding: 0; pointer-events: auto; }
+    </style>
+</head>
+<body>
     <a-scene xr-mode-ui="XRMode: xr"  
-             renderer="colorManagement: true; highRefreshRate:true;" 
+             renderer="colorManagement: true; highRefreshRate: true;" 
              light="defaultLightsEnabled: false">
-      <a-entity id="player" dynamic-body="mass: 5; linearDamping: 0.2; angularDamping: 0.5" movement-controls touch-controls wasd-controls="fly: true; acceleration: 500" look-controls="pointerLockEnabled: true; reverseMouseDrag: false">
-        <a-entity geometry="primitive: plane; height: auto; width: auto"
-            material="shader: flat; opacity: 0.5; side: double"
-            position="0 0 -1"
-            animation="property: material.opacity; from: 0.5; to: 0; dur: 1000; easing: easeInSine; loop: true">
-  </a-entity>
-        <a-entity camera="fov:90" position="0 1.6 0" id="camera"></a-entity>
-        <a-entity id="left-hand" hand-tracking-controls="hand:left;modelColor:#cccccc" raycaster="objects:.ray" blink-controls="cameraRig:#player; teleportOrigin: #camera; collisionEntities: .floor">
-          <a-entity rotation="-35 0 0" position="0 0.1 0" id="navigator"> 
-            <a-entity id="back" xrf-button="label: <; width:0.05; action: history.back()"    position="-0.025 0 0" class="ray"></a-entity>
-            <a-entity id="next" xrf-button="label: >; width:0.05; action: history.forward()" position=" 0.025 0 0" class="ray"></a-entity>
-          </a-entity>
+        <a-entity id="cameraRig" dynamic-body="mass: 5; linearDamping: 0.2; angularDamping: 0.5"
+                  movement-controls touch-controls wasd-controls="fly: true; acceleration: 500"
+                  look-controls="pointerLockEnabled: true; reverseMouseDrag: false"
+                  joystick-flight>
+            <a-camera position="0 1.6 0"></a-camera>
+            <a-entity id="leftController" oculus-touch-controls="hand: left" hand-tracking-controls="hand:left;modelColor:#cccccc"
+                      raycaster="objects:.interactive" blink-controls="cameraRig:#cameraRig; teleportOrigin: #camera"
+                      laser-controls="hand: left">
+                <!-- Other entities related to the left controller -->
+            </a-entity>
+            <a-entity id="rightController" oculus-touch-controls="hand: right" hand-tracking-controls="hand:right;modelColor:#cccccc"
+                      raycaster="objects:.interactive" blink-controls="cameraRig:#cameraRig; teleportOrigin: #camera"
+                      laser-controls="hand: right">
+                <!-- Other entities related to the right controller -->
+            </a-entity>
         </a-entity>
-        <a-entity id="right-hand" hand-tracking-controls="hand:right;modelColor:#cccccc" laser-controls="hand: right" raycaster="objects:.ray" blink-controls="cameraRig:#player; teleportOrigin: #camera; collisionEntities: .floor" xrf-pinchmove="rig: #player"></a-entity>
-      </a-entity>
-
-      <a-entity id="home" xrf="index.glb" xrf-menu></a-entity>
-
-  <a-entity id="cameraRig">
-    <a-camera position="0 1.6 0"></a-camera>
-    <a-entity id="left-hand" oculus-touch-controls="hand: left" joystick-flight></a-entity>
-    <a-entity id="right-hand" oculus-touch-controls="hand: right" joystick-flight></a-entity>
-  </a-entity>
-</a-scene>
-    <!-- OPTIONAL                                                                                            -->
-    <!--                                                                                                     -->
-    <!-- everything below is completely optional, but handy to add a quick menu / connectivity to your space -->
-    <!--                                                                                                     -->
-    <script>
-
-      document.addEventListener('$menu:ready', (e) => {
-        let {$menu} = e.detail
-        // add your menubuttons:
-        $menu.buttons = $menu.buttons.concat([
-          `<a class="btn" aria-label="button" aria-title="menu button" onclick="$menu.showAbout()"><i class="gg-info"></i>&nbsp;&nbsp;&nbsp;about</a><br>`
-        ])
-        $menu.collapsed = false
-        $menu.showAbout = () => window.notify(`
-            <h1>💁 Hi there!</h1>
-
-            This XR fragments experience works almost anywhere.<br>
-            Allowing rich audiovisual events with(out)<br>
-            VR/AR headsets (it's awesome though ♥️)<br>
-            <br>
-            <b>This uses only open standards:</b><br>
-            📦 surf 3D models using URLs<br>
-            🎞 interactive <a href="https://www.w3.org/TR/media-frags/" target="_blank">W3C Media Fragments</a> and <a href="https://en.wikipedia.org/wiki/URI_Template" target="_blank">URI Templates</a><br>
-            🧑‍🤝‍🧑 <b>instant</b> meetings inside hyperlinked 3D models<br>
-            🚫 <b>zero proprietary</b> tech/game engines or platforms<br>
-            🙈 unhosted, privacy-friendly, avatar-agnostic scenes<br> 
-            🔗 <a href="https://xrfragment.org" target="_blank">XR Fragments</a> for 3D <b>hyper-linking</b> & navigation<br> 
-            📷 Serverless & encrypted <a href="https://webrtc.org" target="_blank">P2P WebRTC</a> using <a href="https://github.com/dmotz/trystero" target="_blank">trystero</a><br> 
-            🦍 <a href="https://immersiveweb.dev" target="_blank">WebXR</a> using <a href="https://aframe.io" target="_blank">AFRAME</a> + <a href="https://three.org" target="_blank">Three.js</a><br>
-            🙉 go selfhost <a href="https://github.com/coderofsalvation/xrfragment-helloworld">worlds-in-a-webpage</a><br>
-            ♥️  Be sustainable: go 100% <a href="https://www.forbes.com/sites/adrianbridgwater/2023/02/06/the-future-for-open-source/" target="_blank">opensource</a>
-            <br><br>
-            <a href="https://nlnet.nl" target="_blank">
-              <img src="https://nlnet.nl/image/logo_nlnet.svg" width="100"/>
-            </a>
-            <br><br>
-            `,{timeout:false})
-      })
-    </script>
-
-
-    <!-- everything below is completely optional and not part of the spec -->
-
-    <script src="https://xrfragment.org/dist/aframe-blink-controls.min.js"></script>      <!-- teleporting using controllers -->
-    <script src="https://xrfragment.org/dist/xrfragment.plugin.p2p.js"></script>          <!-- serverless p2p connectivity   -->
-    <script src="https://xrfragment.org/dist/xrfragment.plugin.matrix.js"></script>       <!-- matrix connectivity           -->
-    <script src="https://xrfragment.org/dist/xrfragment.plugin.network.js"></script>      <!-- matrix and webrtc chat/scene examples --> 
-    <script src="https://xrfragment.org/dist/xrfragment.plugin.editor.js"></script>       <!-- basic editor example          --> 
-    <script src="https://xrfragment.org/dist/xrfragment.plugin.frontend.css.js"></script> <!-- basic menu interface css      -->
-    <script src="https://xrfragment.org/dist/xrfragment.plugin.frontend.js"></script>     <!-- basic menu interface          -->
-
-  </body>
+        <a-entity id="home" xrf="index.glb" xrf-menu></a-entity>
+    </a-scene>
+    <script src="https://xrfragment.org/dist/aframe-blink-controls.min.js"></script>
+    <script src="https://xrfragment.org/dist/xrfragment.plugin.p2p.js"></script>
+    <script src="https://xrfragment.org/dist/xrfragment.plugin.matrix.js"></script>
+    <script src="https://xrfragment.org/dist/xrfragment.plugin.network.js"></script>
+    <script src="https://xrfragment.org/dist/xrfragment.plugin.editor.js"></script>
+    <script src="https://xrfragment.org/dist/xrfragment.plugin.frontend.css.js"></script>
+    <script src="https://xrfragment.org/dist/xrfragment.plugin.frontend.js"></script>
+</body>
 </html>
