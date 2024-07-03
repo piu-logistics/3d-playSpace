@@ -9,24 +9,32 @@
     <script src="https://xrfragment.org/dist/aframe.min.js"></script>
     <script src="https://xrfragment.org/dist/xrfragment.aframe.js"></script>
     <script>
-        AFRAME.registerComponent('joystick-flight', {
-            schema: {
-                speed: {type: 'number', default: 10}
-            },
-            init: function () {
-                this.directionVec3 = new THREE.Vector3();
-            },
-            tick: function (time, timeDelta) {
-                // Ensure that the tracked-controls component and its axis are available
-                if (!this.el.components['tracked-controls'] || !this.el.components['tracked-controls'].axis) return;
-                var inputX = this.el.components['tracked-controls'].axis[0];
-                var inputY = this.el.components['tracked-controls'].axis[1];
-                this.directionVec3.set(inputX, 0, -inputY).normalize();
-                var velocity = this.directionVec3.clone().multiplyScalar(this.data.speed * timeDelta / 1000);
-                this.el.object3D.position.add(velocity);
-            }
-        });
+          AFRAME.registerComponent('joystick-flight', {
+    schema: {
+      speed: {type: 'number', default: 10}
+    },
+    init: function () {
+      this.directionVec3 = new THREE.Vector3();
+      // Ensure the controls are loaded
+      this.el.addEventListener('controllerconnected', this.updateControls.bind(this));
+    },
+    updateControls: function (event) {
+      this.controls = this.el.components['tracked-controls'];
+    },
+    tick: function (time, timeDelta) {
+      if (!this.controls || !this.controls.data.axis) return;
+      var inputX = this.controls.data.axis[0];
+      var inputY = this.controls.data.axis[1];
 
+      // Apply movement
+      if (inputX !== 0 || inputY !== 0) {
+        this.directionVec3.set(inputX, 0, -inputY).normalize();
+        var velocity = this.directionVec3.clone().multiplyScalar(this.data.speed * timeDelta / 1000);
+        this.el.object3D.position.add(velocity);
+      }
+    }
+  });
+        
         // This component could contain logic for dynamically adjusting the speed based on interactions
         AFRAME.registerComponent('speed-control', {
             schema: { speed: {type: 'number', default: 1.0} },
