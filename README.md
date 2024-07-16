@@ -1,4 +1,4 @@
-[![Watch the video](https://i.sstatic.net/Vp2cE.png)](https://youtu.be/vt5fpE0bzSY)
+[![Watch the video](https://i.sstatic.net/Vp2cE.png)](https://vimeo.com/alkebulanmeta/3d-play-in-vr-v1)
 
 3D-Play is our network-state’s virtual home, our metaverse.
 
